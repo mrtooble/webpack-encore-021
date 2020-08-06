@@ -1,0 +1,42 @@
+sudo: false
+language: node_js
+
+cache:
+  yarn: true
+  directories:
+    - $HOME/.npm
+
+matrix:
+  include:
+    - name: 'Lowest versions of the dependencies'
+      os: linux
+      node_js: "10"
+      env: JOB_PART=test
+      install:
+        - rm yarn.lock
+        - node ./scripts/force-lowest-dependencies
+        - yarn
+    - name: 'Highest versions of the dependencies'
+      os: linux
+      node_js: "10"
+      env: JOB_PART=test
+      install:
+        - rm yarn.lock
+        - yarn
+    - os: linux
+      node_js: "10"
+      env: JOB_PART=travis:lint
+    - os: linux
+      node_js: "10"
+      env: JOB_PART=test
+    - os: linux
+      node_js: "9"
+      env: JOB_PART=test
+    - os: linux
+      node_js: "8"
+      env: JOB_PART=test
+    - os: linux
+      node_js: "6"
+      env: JOB_PART=test
+
+script: npm run $JOB_PART
